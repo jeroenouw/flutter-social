@@ -1,0 +1,16 @@
+{
+    "scripts": {
+        "start": "flutter run",
+        "start:debug": "flutter run -v",
+        "start:emulator": "flutter emulators --launch Nexus_6P_API_27 • Nexus 6P • Google • Nexus 6P API 27",
+        "device": "flutter devices",
+        "doctor": "flutter doctor",
+        "doctor:debug": "flutter doctor -v",
+        "install:packages": "flutter packages get",
+        "build:apk": "flutter build apk",
+        "build:appbundle": "flutter build appbundle",
+        "build:ios": "flutter build ios",
+        "screenshot": "flutter screenshot",
+        "log": "flutter logs"
+    }
+}
