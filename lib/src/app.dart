@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:social/src/screens/chat_overview_screen.dart';
 import 'package:social/src/screens/chat_screen.dart';
 import 'package:social/src/widgets/snackbar.dart';
 
@@ -37,9 +38,10 @@ class _MainPageState extends State<MainPage> {
         children: <Widget>[
           // Container(color: Colors.greenAccent),
           // Container(color: Colors.blueAccent),
+          // Container(color: Colors.lightBlue),
           SnackBarWidget(),
           ChatScreen(),
-          Container(color: Colors.lightBlue),
+          ChatOverviewScreen(),
         ],
         controller: _pageController,
         onPageChanged: onPageChanged,

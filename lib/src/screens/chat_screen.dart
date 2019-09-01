@@ -42,7 +42,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
       _isComposing = false;
     });
     ChatMessage message = ChatMessage(
-      content: messageContent,
+      message: messageContent,
       animationController: AnimationController(
         duration: Duration(milliseconds: 400),
         vsync: this,
@@ -81,7 +81,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
                 decoration:
                     InputDecoration.collapsed(
                       enabled: true,
-                      hintText: 'Send a message'),
+                      hintText: 'Enter your message...'),
               ),
             ),
             Container(

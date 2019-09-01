@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 class ChatMessage extends StatelessWidget {
   final String _name = 'Jeroen';
-  final String content;
+  final String message;
   final AnimationController animationController;
 
-  ChatMessage({this.content, this.animationController});
+  ChatMessage({this.message, this.animationController});
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +29,7 @@ class ChatMessage extends StatelessWidget {
                     Text(_name, style: Theme.of(context).textTheme.subhead),
                     Container(
                       margin: const EdgeInsets.only(top: 5.0),
-                      child: Text(content),
+                      child: Text(message),
                     ),
                   ],
                 ),
