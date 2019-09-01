@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:social/src/screens/chat_screen.dart';
+import 'package:social/src/widgets/snackbar.dart';
 
 class MyApp extends StatelessWidget {
   @override
@@ -6,7 +8,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'FlutterSocialApp',
       theme: ThemeData(
-        primaryColor: Colors.greenAccent,
+        primaryColor: Colors.blueAccent,
       ),
       home: MainPage(),
       showPerformanceOverlay: false,
@@ -28,11 +30,16 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Social App'),
+      ),
       body: PageView(
         children: <Widget>[
-          Container(color: Colors.greenAccent),
-          Container(color: Colors.blueAccent),
-          Container(color: Colors.redAccent),
+          // Container(color: Colors.greenAccent),
+          // Container(color: Colors.blueAccent),
+          SnackBarWidget(),
+          ChatScreen(),
+          Container(color: Colors.lightBlue),
         ],
         controller: _pageController,
         onPageChanged: onPageChanged,
@@ -40,12 +47,12 @@ class _MainPageState extends State<MainPage> {
       bottomNavigationBar: BottomNavigationBar(
         items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.add), 
-            title: Text('trends')
+            icon: Icon(Icons.notifications), 
+            title: Text('Notifications')
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.location_on), 
-            title: Text('feed')
+            icon: Icon(Icons.message), 
+            title: Text('Chat')
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.people), 
