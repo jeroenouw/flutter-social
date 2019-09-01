@@ -39,27 +39,27 @@ class _MainPageState extends State<MainPage> {
           // Container(color: Colors.greenAccent),
           // Container(color: Colors.blueAccent),
           // Container(color: Colors.lightBlue),
-          SnackBarWidget(),
-          ChatScreen(),
           ChatOverviewScreen(),
+          ChatScreen(),
+          SnackBarWidget(),
         ],
         controller: _pageController,
         onPageChanged: onPageChanged,
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.notifications), 
-            title: Text('Notifications')
+           BottomNavigationBarItem(
+            icon: Icon(Icons.people), 
+            title: Text('Overview')
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.message), 
             title: Text('Chat')
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.people), 
-            title: Text('community')
-          )
+            icon: Icon(Icons.notifications), 
+            title: Text('Notifications')
+          ),
         ],
         onTap: onTap,
         currentIndex: _pageIndex
