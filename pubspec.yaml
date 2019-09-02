@@ -28,8 +28,11 @@ dependencies:
   firebase_core: ^0.4.0
   firebase_analytics: ^5.0.1
   firebase_auth:  ^0.14.0
+  firebase_messaging: ^5.1.4
+  firebase_storage: ^3.0.6
 
   rxdart: 0.22.02
+  camera:
 
 dev_dependencies:
   flutter_test:
