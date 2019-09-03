@@ -98,27 +98,20 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> with TickerProvider
   }
 
   void _sendChatMessge(String messageContent) {
-
-    if (messageContent.trim() != '') {
-      _textController.clear();
-      setState(() {
-        _isComposing = false;
-      });
-      ChatMessage message = ChatMessage(
-        message: messageContent,
-        animationController: AnimationController(
-          duration: Duration(milliseconds: 400),
-          vsync: this,
-        ),
-      );
-      setState(() {
-        _messages.insert(0, message);
-      });
-      message.animationController.forward();
-    } else {
-      // TODO: SNACKBAR FIX
-      Scaffold.of(context).showSnackBar(CustomSnackBar() as SnackBar);
-      
-    }
+    _textController.clear();
+    setState(() {
+      _isComposing = false;
+    });
+    ChatMessage message = ChatMessage(
+      message: messageContent,
+      animationController: AnimationController(
+        duration: Duration(milliseconds: 400),
+        vsync: this,
+      ),
+    );
+    setState(() {
+      _messages.insert(0, message);
+    });
+    message.animationController.forward();
   }
 }

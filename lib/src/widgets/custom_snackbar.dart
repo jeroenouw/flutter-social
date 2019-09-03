@@ -7,13 +7,20 @@ class CustomSnackBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SnackBar(
-      duration: Duration(seconds: 3),
-      content: Text(message),
-      action: SnackBarAction(
-        label: 'Clear',
-        onPressed: () {},
-      ),
+    return RaisedButton(
+      onPressed: () {
+        final snackBar = SnackBar(
+          duration: Duration(seconds: 3),
+          content: Text(message),
+          action: SnackBarAction(
+            label: 'Clear',
+            onPressed: () {},
+          ),
+        );
+
+        Scaffold.of(context).showSnackBar(snackBar);
+      },
+      child: Text('Show SnackBar'),
     );
   }
 }

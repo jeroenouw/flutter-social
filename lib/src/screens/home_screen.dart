@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:social/src/models/menu_item_model.dart';
 import 'package:social/src/screens/chat_overview_screen.dart';
-import 'package:social/src/widgets/custom_snackbar.dart';
+import 'package:social/src/widgets/custom_alert.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -19,12 +19,6 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: Text('Social App'),
         actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.notifications),
-            onPressed: () {
-              // TODO:
-            },
-          ),
           PopupMenuButton<MenuItem>(
             onSelected: _selectMenuItem,
             itemBuilder: (BuildContext context) {
@@ -48,7 +42,10 @@ class _HomeScreenState extends State<HomeScreen> {
       body: PageView(
         children: <Widget>[
           ChatOverviewScreen(),
-          CustomSnackBar(message: 'Sample message'),
+          CustomAlert(
+            title: 'Nothing to see here', 
+            content: 'This page is still in development'
+          )
         ],
         controller: _pageController,
         onPageChanged: _onPageChanged,
@@ -59,7 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
           Icons.message,
           color: Colors.white,
         ),
-        onPressed: () => print('Chats'),
+        onPressed: () => print('Floating button press')
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: [
