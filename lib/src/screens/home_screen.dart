@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:social/src/models/menu_item_model.dart';
+import 'package:social/src/screens/auth_screen.dart';
 import 'package:social/src/screens/chat_overview_screen.dart';
 import 'package:social/src/widgets/custom_alert.dart';
 
@@ -45,18 +46,12 @@ class _HomeScreenState extends State<HomeScreen> {
           CustomAlert(
             title: 'Nothing to see here', 
             content: 'This page is still in development'
-          )
+          ),
+          // FIXME:
+          AuthScreen(),
         ],
         controller: _pageController,
         onPageChanged: _onPageChanged,
-      ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Theme.of(context).accentColor,
-        child: Icon(
-          Icons.message,
-          color: Colors.white,
-        ),
-        onPressed: () => print('Floating button press')
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: [
@@ -67,6 +62,11 @@ class _HomeScreenState extends State<HomeScreen> {
           BottomNavigationBarItem(
             icon: Icon(Icons.notifications), 
             title: Text('Notifications')
+          ),
+          // FIXME:
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person_add), 
+            title: Text('Auth')
           ),
         ],
         onTap: _onTap,
