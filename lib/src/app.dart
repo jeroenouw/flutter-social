@@ -1,29 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:social/src/providers/auth_provider.dart';
+import 'package:social/src/screens/auth_screen.dart';
 import 'package:social/src/screens/home_screen.dart';
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'FlutterSocialApp',
-      theme: ThemeData(
-        primaryColor: Colors.blueAccent,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider.value(
+          value: AuthProvider(),
+        ),
+      ],
+      child: Consumer<AuthProvider>(
+        builder: (context, auth, _) => MaterialApp(
+          title: 'FlutterSocialApp',
+          theme: ThemeData(
+            primaryColor: Colors.blueAccent,
+          ),
+          home: auth.isAuth ? HomeScreen() : AuthScreen(),
+          // home: auth.isAuth ? AuthScreen() : HomeScreen(),
+          showPerformanceOverlay: false,
+        ),
       ),
-      home: MainPage(),
-      showPerformanceOverlay: false,
     );
-  }
-}
-
-class MainPage extends StatefulWidget {
-  @override
-  _MainPageState createState() => _MainPageState();
-}
-
-class _MainPageState extends State<MainPage> {
-
-  @override
-  Widget build(BuildContext context) {
-    return HomeScreen();
   }
 }

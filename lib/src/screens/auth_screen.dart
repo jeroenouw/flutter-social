@@ -5,7 +5,6 @@ import 'package:social/src/models/http_exception_model.dart';
 import 'package:social/src/providers/auth_provider.dart';
 
 class AuthScreen extends StatelessWidget {
-  static const routeName = '/auth';
 
   @override
   Widget build(BuildContext context) {
@@ -159,14 +158,14 @@ class _AuthCardState extends State<AuthCard> {
     });
     try {
       if (_authMode == AuthMode.Login) {
-        // Log user in
         await Provider.of<AuthProvider>(context, listen: false).login(
+        // await AuthProvider().login(
           _authData['email'],
           _authData['password'],
         );
       } else {
-        // Sign user up
         await Provider.of<AuthProvider>(context, listen: false).signup(
+        // await AuthProvider().signup(
           _authData['email'],
           _authData['password'],
         );
@@ -208,21 +207,21 @@ class _AuthCardState extends State<AuthCard> {
     }
   }
 
-  void _showErrorDialog(String message) {
+  void _showErrorDialog(String errorMessage) {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-            title: Text('An Error Occurred!'),
-            content: Text(message),
-            actions: <Widget>[
-              FlatButton(
-                child: Text('Okay'),
-                onPressed: () {
-                  Navigator.of(ctx).pop();
-                },
-              )
-            ],
-          ),
+        title: Text('An Error Occurred!'),
+        content: Text(errorMessage),
+        actions: <Widget>[
+          FlatButton(
+            child: Text('Okay'),
+            onPressed: () {
+              Navigator.of(ctx).pop();
+            },
+          )
+        ],
+      ),
     );
   }
 }
