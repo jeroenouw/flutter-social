@@ -2,58 +2,71 @@ import 'package:flutter/material.dart';
 import 'package:social/src/mocks/chat_overview_mock_data.dart';
 import 'package:social/src/screens/chat_detail_screen.dart';
 
-class ChatOverviewScreen extends StatefulWidget {
+class ChatOverviewScreen extends StatelessWidget {
   @override
-  _ChatOverviewScreenState createState() => _ChatOverviewScreenState();
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: ListView.builder(
+        itemCount: chatOverviewMockData.length,
+        itemBuilder: (context, int i) => Column(
+          children: <Widget>[
+            Divider(
+              height: 10.0,
+            ),
+            ChatOverviewScreenContent(index: i),
+          ],
+        ),
+      )
+    );
+  }
 }
 
-class _ChatOverviewScreenState extends State<ChatOverviewScreen> {
+class ChatOverviewScreenContent extends StatefulWidget {
+  final int index;
+
+  @override
+  _ChatOverviewScreenState createState() => _ChatOverviewScreenState();
+
+  ChatOverviewScreenContent({this.index});
+}
+
+class _ChatOverviewScreenState extends State<ChatOverviewScreenContent> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: chatOverviewMockData.length,
-      itemBuilder: (context, int i) => Column(
+    return ListTile(
+      leading: CircleAvatar(
+        foregroundColor: Theme.of(context).primaryColor,
+        backgroundColor: Colors.grey,
+        child: CircleAvatar(child: Text(chatOverviewMockData[widget.index].name[0])),
+      ),
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Divider(
-            height: 10.0,
+          Text(
+            chatOverviewMockData[widget.index].name,
+            style: TextStyle(fontWeight: FontWeight.bold),
           ),
-          ListTile(
-            leading: CircleAvatar(
-              foregroundColor: Theme.of(context).primaryColor,
-              backgroundColor: Colors.grey,
-              child: CircleAvatar(child: Text(chatOverviewMockData[i].name[0])),
-            ),
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Text(
-                  chatOverviewMockData[i].name,
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  chatOverviewMockData[i].time,
-                  style: TextStyle(color: Colors.grey, fontSize: 14.0),
-                ),
-              ],
-            ),
-            subtitle: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Text(
-                  chatOverviewMockData[i].message,
-                  style: TextStyle(color: Colors.grey, fontSize: 15.0),
-                ),
-                Icon(
-                  Icons.check,
-                  color: Colors.grey,
-                ),
-              ],
-            ),
-            onTap: () => _goToChat(chatOverviewMockData[i].name)
-          )
+          Text(
+            chatOverviewMockData[widget.index].time,
+            style: TextStyle(color: Colors.grey, fontSize: 14.0),
+          ),
         ],
       ),
+      subtitle: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Text(
+            chatOverviewMockData[widget.index].message,
+            style: TextStyle(color: Colors.grey, fontSize: 15.0),
+          ),
+          Icon(
+            Icons.check,
+            color: Colors.grey,
+          ),
+        ],
+      ),
+      onTap: () => _goToChat(chatOverviewMockData[widget.index].name)
     );
   }
 

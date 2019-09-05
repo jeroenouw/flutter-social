@@ -1,11 +1,21 @@
 import 'package:flutter/material.dart';
 
-class ProfileScreen extends StatefulWidget {
+class ProfileScreen extends StatelessWidget {
   @override
-  _ProfileScreenState createState() => _ProfileScreenState();
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(title: Text('Profile')),
+        body: ProfileScreenContent()
+    );
+  }
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class ProfileScreenContent extends StatefulWidget {
+  @override
+  _ProfileScreenContentState createState() => _ProfileScreenContentState();
+}
+
+class _ProfileScreenContentState extends State<ProfileScreenContent> {
   
   @override
   Widget build(BuildContext context) {
@@ -65,21 +75,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
     );
 
-    return Scaffold(
-        appBar: AppBar(title: Text('Profile')),
-        body: ListView(
-          children: [
-            Image.asset(
-              'images/profile.jpg',
-              width: 600,
-              height: 240,
-              fit: BoxFit.cover,
-            ),
-            titleSection,
-            buttonSection,
-            textSection,
-          ],
+    return ListView(
+      children: [
+        Image.asset(
+          'images/profile.jpg',
+          width: 600,
+          height: 240,
+          fit: BoxFit.cover,
         ),
+        titleSection,
+        buttonSection,
+        textSection,
+      ],
     );
   }
 

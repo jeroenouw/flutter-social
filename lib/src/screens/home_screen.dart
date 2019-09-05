@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:social/src/models/menu_item_model.dart';
-import 'package:social/src/screens/auth_screen.dart';
 import 'package:social/src/screens/chat_overview_screen.dart';
+import 'package:social/src/widgets/app_drawer.dart';
 import 'package:social/src/widgets/custom_alert.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -40,38 +40,8 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      body: PageView(
-        children: <Widget>[
-          ChatOverviewScreen(),
-          CustomAlert(
-            title: 'Nothing to see here', 
-            content: 'This page is still in development'
-          ),
-          // FIXME:
-          AuthScreen(),
-        ],
-        controller: _pageController,
-        onPageChanged: _onPageChanged,
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: [
-           BottomNavigationBarItem(
-            icon: Icon(Icons.people), 
-            title: Text('Overview')
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.notifications), 
-            title: Text('Notifications')
-          ),
-          // FIXME:
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person_add), 
-            title: Text('Auth')
-          ),
-        ],
-        onTap: _onTap,
-        currentIndex: _pageIndex
-      ),
+      drawer: AppDrawer(),
+      body: ChatOverviewScreen(),
     );
   }
 
@@ -93,19 +63,5 @@ class _HomeScreenState extends State<HomeScreen> {
     });
 
     Navigator.push(context, MaterialPageRoute<void>(builder: (BuildContext context) => menuItem.screen));
-  }
-
-  void _onTap(int pageIndex) {
-    _pageController.animateToPage(
-      pageIndex,
-      duration: Duration(milliseconds: 300),
-      curve: Curves.ease,
-    );
-  }
-
-  void _onPageChanged(int pageIndex) {
-    setState(() {
-      this._pageIndex = pageIndex;
-    });
   }
 }

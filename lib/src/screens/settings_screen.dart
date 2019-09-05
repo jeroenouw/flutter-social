@@ -1,15 +1,26 @@
 import 'package:flutter/material.dart';
 
-class SettingsScreen extends StatefulWidget {
-  @override
-  _SettingsScreenState createState() => _SettingsScreenState();
-}
-
-class _SettingsScreenState extends State<SettingsScreen> {
+class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(title: Text('Settings')),
+        // body: SettingsScreenContent()
     );
   }
 }
+
+// FIXME: 
+// class SettingsScreenContent extends StatefulWidget {
+//   @override
+//   _SettingsScreenContentState createState() => _SettingsScreenContentState();
+// }
+
+// class _SettingsScreenContentState extends State<SettingsScreenContent> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//         appBar: AppBar(title: Text('Settings')),
+//     );
+//   }
+// }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:social/src/widgets/chat_message.dart';
-import 'package:social/src/widgets/custom_snackbar.dart';
 
 class ChatDetailScreen extends StatefulWidget {
   final String userToChat;
