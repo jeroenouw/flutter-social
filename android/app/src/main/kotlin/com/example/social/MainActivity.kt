@@ -1,4 +1,4 @@
-package com.example.social
+package com.jeroenouw.social_chat_flutter
 
 import android.os.Bundle
 
