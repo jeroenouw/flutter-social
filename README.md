@@ -31,5 +31,5 @@ Run `npm run reset` if you want to re-install everything.
 For own projects please use your own keys in `android/app/google-services.json`:  
 
 ## Screenshots <a name = "screenshots"></a>
-<p align="left"><img src="/screen-signup.png?raw=true"/></p>
-<p align="left"><img src="/screen-chat-overview.png?raw=true"/></p>
+<p><img src="/screen-signup.png?raw=true" width="320"/></p>
+<p><img src="/screen-chat-overview.png?raw=true" width="320"/></p>
