@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:social/src/providers/auth_provider.dart';
 import 'package:social/src/screens/auth_screen.dart';
 import 'package:social/src/screens/home_screen.dart';
+import 'package:social/src/screens/splash_screen.dart';
 
 class MyApp extends StatelessWidget {
   @override
@@ -19,8 +20,15 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(
             primaryColor: Colors.blueAccent,
           ),
-          home: auth.isAuth ? HomeScreen() : AuthScreen(),
-          // home: auth.isAuth ? AuthScreen() : HomeScreen(),
+          home: auth.isAuth 
+            ? HomeScreen() 
+            : FutureBuilder(
+              future: auth.autoLoginIfUserSession(), 
+              builder: (context, authResultSnapshot) => 
+                authResultSnapshot.connectionState == ConnectionState.waiting 
+                ? SplashScreen()
+                : AuthScreen()
+          ),
           showPerformanceOverlay: false,
         ),
       ),

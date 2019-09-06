@@ -79,8 +79,8 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> with TickerProvider
               margin: EdgeInsets.symmetric(horizontal: 4.0),
               child: IconButton(
                   icon: Icon(Icons.send),
-                  onPressed: _isComposing ?
-                    () => _sendChatMessge(_textController.text)
+                  onPressed: _isComposing 
+                    ? () => _sendChatMessge(_textController.text)
                     : null,
               ),
             ),

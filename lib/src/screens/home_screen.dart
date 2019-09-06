@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:social/src/models/menu_item_model.dart';
 import 'package:social/src/screens/chat_overview_screen.dart';
 import 'package:social/src/widgets/app_drawer.dart';
-import 'package:social/src/widgets/custom_alert.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -11,7 +10,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   PageController _pageController;
-  int _pageIndex = 0;
   MenuItem _selectedMenuItem = menuItems[0];
 
   @override

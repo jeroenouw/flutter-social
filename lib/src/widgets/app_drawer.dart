@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:social/src/providers/auth_provider.dart';
+import 'package:social/src/screens/auth_screen.dart';
 import 'package:social/src/screens/chat_overview_screen.dart';
 import 'package:social/src/widgets/custom_alert.dart';
 
@@ -43,6 +44,9 @@ class AppDrawer extends StatelessWidget {
             title: Text('Logout'),
             onTap: () {
               Navigator.of(context).pop();
+              Navigator.push(context, MaterialPageRoute<void>(builder: (BuildContext context) => 
+                AuthScreen()
+              ));
               Provider.of<AuthProvider>(context, listen: false).logout();
             },
           ),
