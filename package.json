@@ -11,6 +11,7 @@
         "build:appbundle": "flutter build appbundle",
         "build:ios": "flutter build ios",
         "screenshot": "flutter screenshot",
-        "log": "flutter logs"
+        "log": "flutter logs",
+        "reset": "rm -rf ./build ./pubspec.lock && flutter pub get"
     }
 }
