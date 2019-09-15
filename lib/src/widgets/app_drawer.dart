@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:social/src/providers/auth_provider.dart';
-import 'package:social/src/screens/auth_screen.dart';
-import 'package:social/src/screens/chat_overview_screen.dart';
-import 'package:social/src/widgets/custom_alert.dart';
+
+import '../constants/routing_contant.dart';
+import '../providers/auth_provider.dart';
+import './custom_alert.dart';
 
 class AppDrawer extends StatelessWidget {
   @override
@@ -15,17 +15,13 @@ class AppDrawer extends StatelessWidget {
             title: Text('Navigation'),
             automaticallyImplyLeading: false,
           ),
-          Divider(),
           ListTile(
             leading: Icon(Icons.people),
             title: Text('Overview'),
             onTap: () {
-              Navigator.push(context, MaterialPageRoute<void>(builder: (BuildContext context) => 
-                ChatOverviewScreen()
-              ));
+              Navigator.of(context).pushNamed(chatOverviewRoute);
             },
           ),
-          Divider(),
           ListTile(
             leading: Icon(Icons.notifications),
             title: Text('Notifications'),
@@ -38,15 +34,26 @@ class AppDrawer extends StatelessWidget {
               ));
             },
           ),
-          Divider(),
+          ListTile(
+            leading: Icon(Icons.person),
+            title: Text('Profile'),
+            onTap: () {
+              Navigator.of(context).pushNamed(profileRoute);
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.settings),
+            title: Text('Settings'),
+            onTap: () {
+              Navigator.of(context).pushNamed(settingsRoute);
+            },
+          ),
           ListTile(
             leading: Icon(Icons.exit_to_app),
             title: Text('Logout'),
             onTap: () {
               Navigator.of(context).pop();
-              Navigator.push(context, MaterialPageRoute<void>(builder: (BuildContext context) => 
-                AuthScreen()
-              ));
+              Navigator.of(context).pushNamedAndRemoveUntil(authRoute, (Route<dynamic> route) => false);
               Provider.of<AuthProvider>(context, listen: false).logout();
             },
           ),
