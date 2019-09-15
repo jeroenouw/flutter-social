@@ -2,24 +2,22 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:social/src/models/user_model.dart';
+import '../models/user_model.dart';
 
 // TODO: Implement UserProvider on ProfileScreen
 class UserProvider with ChangeNotifier {
-  final String authToken;
+  final String _authToken;
+  final String _baseUrl = 'https://flutter-social-9fea3.firebaseio.com';
   User _currentUser;
 
-  // FIXME:
-  final String tempUserId = 'userId';
+  UserProvider(this._authToken);
 
-  UserProvider(this.authToken);
+  User get currentUser => _currentUser;
 
-  User get currentUser {
-    return _currentUser;
-  }
-
-  Future<void> getCurrentUser() async {
-    final url = 'https://flutter-update.firebaseio.com/users/$tempUserId.json?auth=$authToken';
+  /// Get the current user from the database.
+  /// Takes [_authToken] class property and [_userId] argument. 
+  Future<void> getCurrentUser(String userId) async {
+    final url = '$_baseUrl/users/$userId.json?auth=$_authToken';
     
     try {
       final response = await http.get(url);
@@ -36,14 +34,17 @@ class UserProvider with ChangeNotifier {
       );
 
       _currentUser = loadedUser;
+
       notifyListeners(); 
-    } catch (error) {
+    } on Exception catch (error) {
       throw (error);
     }
   }
 
-  Future<void> updateCurrentUser(User user) async {
-    final url = 'https://flutter-update.firebaseio.com/users/$tempUserId.json?auth=$authToken';
+  /// Set the user to the database.
+  /// Takes [_authToken] class property and [user] object class as argument. 
+  Future<void> setUser(User user) async {
+    final url = '$_baseUrl/users/${user.userId}.json?auth=$_authToken';
     try {
       await http.post(
         url,
@@ -55,7 +56,7 @@ class UserProvider with ChangeNotifier {
         }),
       );
       notifyListeners();
-    } catch (error) {
+    } on Exception catch (error) {
       throw (error);
     }
   }

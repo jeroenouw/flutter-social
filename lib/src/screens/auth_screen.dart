@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:social/src/models/auth_model.dart';
-import 'package:social/src/models/http_exception_model.dart';
-import 'package:social/src/providers/auth_provider.dart';
+
+import '../models/auth_model.dart';
+import '../models/http_exception_model.dart';
+import '../providers/auth_provider.dart';
 
 class AuthScreen extends StatelessWidget {
 
@@ -182,7 +183,7 @@ class _AuthCardState extends State<AuthCard> {
         errorMessage = 'Invalid password.';
       }
       _showErrorDialog(errorMessage);
-    } catch (error) {
+    } on Exception catch (error) {
       const errorMessage =
           'Could not authenticate you. Please try again later.';
       _showErrorDialog(errorMessage);

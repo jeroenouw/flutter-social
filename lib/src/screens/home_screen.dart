@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:social/src/models/menu_item_model.dart';
-import 'package:social/src/screens/chat_overview_screen.dart';
-import 'package:social/src/widgets/app_drawer.dart';
+
+import '../models/menu_item_model.dart';
+import '../screens/chat_overview_screen.dart';
+import '../widgets/app_drawer.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -21,7 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
           PopupMenuButton<MenuItem>(
             onSelected: _selectMenuItem,
             itemBuilder: (BuildContext context) {
-              return menuItems.map((MenuItem menuItem) {
+              return menuItems.map<PopupMenuItem<MenuItem>>((MenuItem menuItem) {
                 return PopupMenuItem<MenuItem>(
                   value: menuItem,
                   child: Row(
@@ -57,7 +58,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _selectMenuItem(MenuItem menuItem) {
     setState(() {
-      this._selectedMenuItem = menuItem;
+      _selectedMenuItem = menuItem;
     });
 
     Navigator.push(context, MaterialPageRoute<void>(builder: (BuildContext context) => menuItem.screen));

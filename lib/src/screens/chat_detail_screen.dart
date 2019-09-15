@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:social/src/widgets/chat_message.dart';
+
+import '../widgets/chat_message.dart';
 
 class ChatDetailScreen extends StatefulWidget {
   final String userToChat;
@@ -47,9 +48,9 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> with TickerProvider
 
   @override 
   void dispose() {
-    for (ChatMessage message in _messages) {
+    _messages.map<dynamic>((ChatMessage message) {
       message.animationController.dispose();
-    }
+    });
     super.dispose();
   }
 
@@ -65,7 +66,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> with TickerProvider
                 controller: _textController,
                 onChanged: (String messageContent) {
                   setState(() {
-                    _isComposing = messageContent.length > 0;
+                    _isComposing = messageContent.isNotEmpty;
                   });
                 },
                 onSubmitted: _sendChatMessge,

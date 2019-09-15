@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:social/src/mocks/chat_overview_mock_data.dart';
-import 'package:social/src/screens/chat_detail_screen.dart';
+
+import '../mocks/chat_overview_mock_data.dart';
+import '../screens/chat_detail_screen.dart';
 
 class ChatOverviewScreen extends StatelessWidget {
   @override
@@ -66,11 +67,11 @@ class _ChatOverviewScreenState extends State<ChatOverviewScreenContent> {
           ),
         ],
       ),
-      onTap: () => _goToChat(chatOverviewMockData[widget.index].name)
+      onTap: () => _goToChatDetail(chatOverviewMockData[widget.index].name)
     );
   }
 
-  void _goToChat(String name) {
+  void _goToChatDetail(String name) {
     Navigator.push(context, MaterialPageRoute<void>(builder: (BuildContext context) => ChatDetailScreen(userToChat: name)));
   }
 }
