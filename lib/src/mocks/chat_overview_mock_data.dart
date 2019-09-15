@@ -1,4 +1,4 @@
-import 'package:social/src/models/chat_model.dart';
+import '../models/chat_model.dart';
 
 List<ChatModel> chatOverviewMockData = [
   ChatModel(

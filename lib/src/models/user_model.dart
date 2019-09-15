@@ -6,10 +6,5 @@ class User {
   final String displayName;
   final String bio;
 
-  User({
-    @required this.userId,
-    @required this.email,
-    this.displayName,
-    this.bio,
-  });
+  User({@required this.userId, @required this.email, this.displayName, this.bio});
 }
