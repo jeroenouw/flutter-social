@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:social/src/utils/validator_util.dart';
 
 import '../models/auth_model.dart';
+import '../models/user_model.dart';
 import '../models/http_exception_model.dart';
 import '../providers/auth_provider.dart';
 
@@ -55,6 +57,7 @@ class _AuthCardState extends State<AuthCard> {
   Map<String, String> _authData = {
     'email': '',
     'password': '',
+    'displayName': '',
   };
 
   @override
@@ -66,9 +69,9 @@ class _AuthCardState extends State<AuthCard> {
       ),
       elevation: 8.0,
       child: Container(
-        height: _authMode == AuthMode.Signup ? 320 : 260,
+        height: _authMode == AuthMode.Signup ? 380 : 260,
         constraints:
-            BoxConstraints(minHeight: _authMode == AuthMode.Signup ? 320 : 260),
+          BoxConstraints(minHeight: _authMode == AuthMode.Signup ? 380 : 260),
         width: deviceSize.width * 0.75,
         padding: EdgeInsets.all(16.0),
         child: Form(
@@ -76,27 +79,28 @@ class _AuthCardState extends State<AuthCard> {
           child: SingleChildScrollView(
             child: Column(
               children: <Widget>[
+                if (_authMode == AuthMode.Signup)
+                  TextFormField(
+                    decoration: InputDecoration(labelText: 'Username', hintText: 'Enter a username'),
+                    keyboardType: TextInputType.text,
+                    validator: Validator.validateName,
+                    onSaved: (value) {
+                      _authData['displayName'] = value;
+                    },
+                  ),
                 TextFormField(
-                  decoration: InputDecoration(labelText: 'E-Mail'),
+                  decoration: InputDecoration(labelText: 'E-Mail', hintText: 'Enter your email'),
                   keyboardType: TextInputType.emailAddress,
-                  validator: (value) {
-                    if (value.isEmpty || !value.contains('@')) {
-                      return 'Invalid email!';
-                    }
-                  },
+                  validator: Validator.validateEmail,
                   onSaved: (value) {
                     _authData['email'] = value;
                   },
                 ),
                 TextFormField(
-                  decoration: InputDecoration(labelText: 'Password'),
+                  decoration: InputDecoration(labelText: 'Password', hintText: 'Enter a password'),
                   obscureText: true,
                   controller: _passwordController,
-                  validator: (value) {
-                    if (value.isEmpty || value.length < 5) {
-                      return 'Password is too short!';
-                    }
-                  },
+                  validator: Validator.validatePassword,
                   onSaved: (value) {
                     _authData['password'] = value;
                   },
@@ -104,15 +108,15 @@ class _AuthCardState extends State<AuthCard> {
                 if (_authMode == AuthMode.Signup)
                   TextFormField(
                     enabled: _authMode == AuthMode.Signup,
-                    decoration: InputDecoration(labelText: 'Confirm Password'),
+                    decoration: InputDecoration(labelText: 'Confirm Password', hintText: 'Enter your password again'),
                     obscureText: true,
                     validator: _authMode == AuthMode.Signup
-                        ? (value) {
-                            if (value != _passwordController.text) {
-                              return 'Passwords do not match!';
-                            }
+                      ? (value) {
+                          if (value != _passwordController.text) {
+                            return 'Passwords do not match!';
                           }
-                        : null,
+                        }
+                      : null,
                   ),
                 SizedBox(
                   height: 20,
@@ -160,14 +164,22 @@ class _AuthCardState extends State<AuthCard> {
     try {
       if (_authMode == AuthMode.Login) {
         await Provider.of<AuthProvider>(context, listen: false).login(
-          _authData['email'],
-          _authData['password'],
+          _authData['email'], 
+          _authData['password']
         );
       } else {
-        await Provider.of<AuthProvider>(context, listen: false).signup(
-          _authData['email'],
-          _authData['password'],
-        );
+         await Provider.of<AuthProvider>(context, listen: false).signup(
+           _authData['email'], 
+           _authData['password']
+          ).then((uid) {
+          AuthProvider.setUserToDatabase(User(
+            userId: uid,
+            email: _authData['email'],
+            displayName: _authData['displayName'],
+            bio: '',
+          ));
+        });
+        _switchAuthMode();
       }
     } on HttpException catch (error) {
       var errorMessage = 'Authentication failed';

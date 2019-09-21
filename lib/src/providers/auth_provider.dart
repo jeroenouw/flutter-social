@@ -1,164 +1,122 @@
 import 'dart:async';
-import 'dart:convert';
 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/widgets.dart';
-import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../models/auth_model.dart';
-import '../models/http_exception_model.dart';
 import '../models/user_model.dart';
-import '../providers/user_provider.dart';
 
 class AuthProvider with ChangeNotifier {
-  String _token;
-  DateTime _expiryDate;
-  String _userId;
-  Timer _authTimer;
-  AuthMode _authMode;
+  bool _isAuthorized = false;
 
-  String _userDataKey = 'userData';
+  bool get isAuth => _isAuthorized == true && getUserFromDevice() != null;
 
-  bool get isAuth => token != null;
-  String get userId => _userId;
-  String get token => _expiryDate != null && _expiryDate.isAfter(DateTime.now()) && _token != null 
-    ? _token 
-    : null;
-
-  /// Signup user based on [email] and [password] and makes use of [_authenticate()] method.
-  Future<void> signup(String email, String password) async {
-    _authMode = AuthMode.Signup;
-    return _authenticate(email, password, 'signupNewUser', _authMode);
-  }
-
-  /// Login user based on [email] and [password] and makes use of [_authenticate()] method.
-  Future<void> login(String email, String password) async {
-    _authMode = AuthMode.Login;
-    return _authenticate(email, password, 'verifyPassword', _authMode);
-  }
-
-  /// Does login automatically if user has still a session.
-  Future<bool> autoLoginIfUserSession() async {
-    final preferences = await SharedPreferences.getInstance();
-    if (!preferences.containsKey(_userDataKey)) {
-      return false;
-    }
-    final extractedUserData = json.decode(preferences.getString(_userDataKey)) as Map<String, Object>;
-    final expiryDate = DateTime.parse(extractedUserData['expiryDate']);
-
-    if (expiryDate.isBefore(DateTime.now())) {
-      return false;
-    }
-
-    _token = extractedUserData['token'];
-    _userId = extractedUserData['userId'];
-    _expiryDate = expiryDate;
-    notifyListeners();
-    _autoLogoutAfterExpiryDate();
-    return true;
-  }
-
-  /// Logout user and sets the following class properties to null: 
-  /// [_token], [_userId], [_expiryDate] and [_authTimer].
-  Future<void> logout() async {
-    _token = null;
-    _userId = null;
-    _expiryDate = null;
-    if (_authTimer != null) {
-      _authTimer.cancel();
-      _authTimer = null;
-    }
-    notifyListeners();
-
-    final preferences = await SharedPreferences.getInstance();
-    preferences.remove(_userDataKey);
-  }
-
-  /// Authenticates user based on [email] and [password]. 
-  /// 
-  /// Needs [urlSegment] for API call and [authMode] for set/get current user.
-  /// Throws [HttpException] with [error] and [message] if API call goes wrong.
-  Future<void> _authenticate(String email, String password, String urlSegment, AuthMode authMode) async {
-    final String apiKey = 'AIzaSyAqFX4jaTxB8e0d5QqgNAUDCPGUCdaa3pU';
-    final String url ='https://www.googleapis.com/identitytoolkit/v3/relyingparty/$urlSegment?key=$apiKey';
-    
+  Future<String> signup(String email, String password) async {
     try {
-      final response = await http.post(
-        url,
-        body: json.encode(
-          {
-            'email': email,
-            'password': password,
-            'returnSecureToken': true,
-          },
-        ),
-      );
-      final responseData = json.decode(response.body);
-      if (responseData['error'] != null) {
-        throw HttpException(message: responseData['error']['message']);
-      }
+      AuthResult result = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password);
+          
+      notifyListeners();
+      return result.user.uid;
+    } on Exception catch (error) {
+      throw error;
+    }
+  }
 
-      _setUserSession(responseData);
+  Future<void> login(String email, String password) async {
+    try {
+      AuthResult result = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: email, password: password);
 
-      if (authMode == AuthMode.Signup) {
-        await _setNewUser(email); 
-      } else if (authMode == AuthMode.Login) {
-        await _getCurrentUser();
-        _autoLogoutAfterExpiryDate();
-        await _saveUserSessionOnDevice();
-      }
-
+      User user = await getUserFromDatabase(result.user.uid);
+      await _setUserOnDevice(user);
+      _isAuthorized = true;
       notifyListeners();
     } on Exception catch (error) {
       throw error;
     }
   }
 
-  /// Set a user session by setting the class properties: [_token], [_userId] and [_expiryDate].
-  void _setUserSession(responseData) {
-    _token = responseData['idToken'];
-    _userId = responseData['localId'];
-    _expiryDate = DateTime.now().add(
-      Duration(
-        seconds: int.parse(
-          responseData['expiresIn']
-        )
-      )
-    );
-  }
+   Future<void> logout() async {
+    try {
+       FirebaseAuth.instance.signOut();
+      _isAuthorized = false;
 
-  /// Set a new user to the database via the [UserProvider] class. 
-  /// Takes class properties: [_userId] and [_token]. Has [email] argument.
-  Future _setNewUser(String email) async {
-    User newUser = User(
-      userId: _userId,
-      email: email,
-      displayName: '',
-      bio: '',
-    );
-    
-    await UserProvider(_token).setUser(newUser);
-  }
-
-  /// Get the current user from the database via the [UserProvider] class.
-  /// Takes class properties: [_userId] and [_token]. 
-  Future _getCurrentUser() async {
-    await UserProvider(_token).getCurrentUser(_userId);
-  }
-
-  /// Set a user session on mobile device based on class properties: [_token], [_userId] and [_expiryDate].
-  Future _saveUserSessionOnDevice() async {
-    final preferences = await SharedPreferences.getInstance();
-    final userDataJSON = json.encode({'token': _token, 'userId': _userId, 'expiryDate': _expiryDate.toIso8601String()});
-    preferences.setString(_userDataKey, userDataJSON);
-  }
-
-  /// Does logout automatically after [_expiryDate] is over
-  void _autoLogoutAfterExpiryDate() {
-    if (_authTimer != null) {
-      _authTimer.cancel();
+      await _removeUserFromDevice();
+      notifyListeners();
+    } on Exception catch (error) {
+      throw error;
     }
-    final timeToExpiry = _expiryDate.difference(DateTime.now()).inSeconds;
-    _authTimer = Timer(Duration(seconds: timeToExpiry), logout);
+  }
+
+  Future<void> forgotPasswordEmail(String email) async {
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+      notifyListeners();
+    } on Exception catch (error) {
+      throw error;
+    }
+  }
+
+  static Future<User> getUserFromDatabase(String userId) async {
+    if (userId != null) {
+      return Firestore.instance
+          .collection('users')
+          .document(userId)
+          .get()
+          .then((documentSnapshot) => User.fromDocument(documentSnapshot));
+    } else {
+      return null;
+    }
+  }
+
+  static void setUserToDatabase(User user) async {
+    _checkIfUserExist(user.userId).then((userExists) {
+      if (!userExists) {
+        Firestore.instance
+            .document('users/${user.userId}')
+            .setData(user.toJson());
+      } else {
+      }
+    });
+  }
+
+  static Future<User> getUserFromDevice() async {
+    final preferences = await SharedPreferences.getInstance();
+    if (preferences.getString('user') != null) {
+      User user = userFromJson(preferences.getString('user'));
+      print('GETUSER: $user');
+      return user;
+    } else {
+      return null;
+    }
+  }
+
+  static Future<void> _setUserOnDevice(User user) async {
+    final preferences = await SharedPreferences.getInstance();
+    final userDate = userToJson(user);
+      print('SETUSER: $userDate');
+    await preferences.setString('user', userDate);
+  }
+  
+  Future<void> _removeUserFromDevice() async {
+    final preferences = await SharedPreferences.getInstance();
+    await preferences.clear();
+  }
+
+  static Future<bool> _checkIfUserExist(String userId) async {
+    bool exists = false;
+    try {
+      await Firestore.instance.document('users/$userId').get().then((doc) {
+        if (doc.exists)
+          exists = true;
+        else
+          exists = false;
+      });
+      return exists;
+    } on Exception catch (error) {
+      throw error;
+    }
   }
 }
