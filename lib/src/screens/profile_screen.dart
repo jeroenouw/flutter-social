@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 
+import '../providers/user_provider.dart';
+import '../models/user_model.dart';
+import '../mocks/user_mock_data.dart';
+import '../app.dart';
+
 class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -16,9 +21,17 @@ class ProfileScreenContent extends StatefulWidget {
 }
 
 class _ProfileScreenContentState extends State<ProfileScreenContent> {
-  
+  User _currentUser = userMock;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
+    _setUserState();
+
     Widget titleSection = Container(
       padding: const EdgeInsets.all(32),
       child: Row(
@@ -30,14 +43,24 @@ class _ProfileScreenContentState extends State<ProfileScreenContent> {
                 Container(
                   padding: const EdgeInsets.only(bottom: 8),
                   child: Text(
-                    'Jeroen Ouwehand',
+                    _currentUser.displayName,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
+                if (SocialApp.isPremiumEdition) 
+                  Text(
+                    'Premium user',
+                  ),
                 Text(
-                  'Software Engineer',
+                  _currentUser.email,
+                  style: TextStyle(
+                    color: Colors.grey[500],
+                  ),
+                ),
+                Text(
+                  _currentUser.userId,
                   style: TextStyle(
                     color: Colors.grey[500],
                   ),
@@ -65,12 +88,7 @@ class _ProfileScreenContentState extends State<ProfileScreenContent> {
     Widget textSection = Container(
       padding: const EdgeInsets.all(32),
       child: Text(
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec condimentum odio ut dictum molestie. Nullam in metus metus.' 
-        'Aliquam erat volutpat. Fusce gravida mollis velit ornare luctus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; '
-        'Nullam sed nulla lobortis, molestie odio non, molestie sem.'
-        'Aliquam sodales scelerisque mi, blandit dapibus arcu vulputate congue. Morbi lacinia quis risus at cursus.'
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec condimentum odio ut dictum molestie. Nullam in metus metus.' 
-        'Aliquam erat volutpat. Fusce gravida mollis velit ornare luctus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; ',
+        _currentUser.bio,
         softWrap: true,
       ),
     );
@@ -104,5 +122,12 @@ class _ProfileScreenContentState extends State<ProfileScreenContent> {
         )
       ],
     );
+  }
+
+  void _setUserState() async {
+    User user = await UserProvider.getUserFromDevice();
+    setState(() {
+      _currentUser = user;
+    });
   }
 }

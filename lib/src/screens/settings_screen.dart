@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:social/src/models/edition_model.dart';
+import 'package:connectivity/connectivity.dart';
 
+import '../service/connection_service.dart';
+import '../constants/routing_contant.dart';
+import '../models/edition_model.dart';
 import '../app.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -21,12 +24,17 @@ class SettingsScreenContent extends StatefulWidget {
 
 class _SettingsScreenContentState extends State<SettingsScreenContent> {
   bool _premiumEnabled;
-  bool _darkModeEnabled = false;
   bool _cloudEnabled = false;
+
+  @override
+  void initState() {
+    super.initState();
+    ConnectionService.init();
+  }
   
   @override
   Widget build(BuildContext context) {
-    _premiumEnabled = _checkAndSetEdition();
+   _premiumEnabled = _checkAndSetEdition();
 
     return ListView(
       children: [
@@ -38,16 +46,6 @@ class _SettingsScreenContentState extends State<SettingsScreenContent> {
           },
           secondary: _premiumEnabled ? Icon(Icons.star) : Icon(Icons.star_border),
         ),
-       SwitchListTile(
-          title: Text('Darkmode (Soon available)'),
-          value: _darkModeEnabled,
-          onChanged: (bool value) {  
-            setState(() { 
-              _darkModeEnabled = value; 
-            });
-          },
-          secondary: _darkModeEnabled ? Icon(Icons.brightness_2) : Icon(Icons.brightness_5),
-        ),
         SwitchListTile(
           title: Text('Cloud (Soon available)'),
           value: _cloudEnabled,
@@ -58,7 +56,24 @@ class _SettingsScreenContentState extends State<SettingsScreenContent> {
           },
           secondary: _cloudEnabled ? Icon(Icons.cloud_done) : Icon(Icons.cloud_queue),
         ),
-      ],
+        Divider(),
+        ListTile(
+          title: Text('You are currently connected to ${ConnectionService.onWifi ? 'WIFI' : 'mobile internet'} '),
+        ),
+        Divider(),
+        ListTile(
+          title: Text("To use darkmode, please toggle 'night option' on your device"),
+        ),
+        Divider(),
+        if (SocialApp.isPremiumEdition) 
+          ListTile(
+            leading: Icon(Icons.settings),
+            title: Text('Update profile (Premium)'),
+            onTap: () {
+              Navigator.of(context).pushNamed(updateProfileRoute);
+            },
+          ),
+      ]
     );
   }
 
