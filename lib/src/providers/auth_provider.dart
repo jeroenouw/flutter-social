@@ -1,16 +1,16 @@
 import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import './user_provider.dart';
 import '../models/user_model.dart';
 
 class AuthProvider with ChangeNotifier {
   bool _isAuthorized = false;
 
-  bool get isAuth => _isAuthorized == true && getUserFromDevice() != null;
+  bool get isAuth => _isAuthorized == true;
 
   Future<String> signup(String email, String password) async {
     try {
@@ -29,8 +29,8 @@ class AuthProvider with ChangeNotifier {
       AuthResult result = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
 
-      User user = await getUserFromDatabase(result.user.uid);
-      await _setUserOnDevice(user);
+      User user = await UserProvider.getUserFromDatabase(result.user.uid);
+      await UserProvider.setUserOnDevice(user);
       _isAuthorized = true;
       notifyListeners();
     } on Exception catch (error) {
@@ -43,7 +43,7 @@ class AuthProvider with ChangeNotifier {
        FirebaseAuth.instance.signOut();
       _isAuthorized = false;
 
-      await _removeUserFromDevice();
+      await UserProvider.removeUserFromDevice();
       notifyListeners();
     } on Exception catch (error) {
       throw error;
@@ -59,64 +59,15 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
-  static Future<User> getUserFromDatabase(String userId) async {
-    if (userId != null) {
-      return Firestore.instance
-          .collection('users')
-          .document(userId)
-          .get()
-          .then((documentSnapshot) => User.fromDocument(documentSnapshot));
-    } else {
-      return null;
-    }
-  }
 
-  static void setUserToDatabase(User user) async {
-    _checkIfUserExist(user.userId).then((userExists) {
-      if (!userExists) {
-        Firestore.instance
-            .document('users/${user.userId}')
-            .setData(user.toJson());
-      } else {
-      }
-    });
-  }
-
-  static Future<User> getUserFromDevice() async {
+  Future<bool> autoLoginIfUserSession() async {
     final preferences = await SharedPreferences.getInstance();
-    if (preferences.getString('user') != null) {
-      User user = userFromJson(preferences.getString('user'));
-      print('GETUSER: $user');
-      return user;
-    } else {
-      return null;
+    if (!preferences.containsKey('user')) {
+      return false;
     }
-  }
+    _isAuthorized = true;
 
-  static Future<void> _setUserOnDevice(User user) async {
-    final preferences = await SharedPreferences.getInstance();
-    final userDate = userToJson(user);
-      print('SETUSER: $userDate');
-    await preferences.setString('user', userDate);
-  }
-  
-  Future<void> _removeUserFromDevice() async {
-    final preferences = await SharedPreferences.getInstance();
-    await preferences.clear();
-  }
-
-  static Future<bool> _checkIfUserExist(String userId) async {
-    bool exists = false;
-    try {
-      await Firestore.instance.document('users/$userId').get().then((doc) {
-        if (doc.exists)
-          exists = true;
-        else
-          exists = false;
-      });
-      return exists;
-    } on Exception catch (error) {
-      throw error;
-    }
+    notifyListeners();
+    return true;
   }
 }

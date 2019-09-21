@@ -1,63 +1,75 @@
-import 'dart:convert';
+import 'dart:async';
 
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import '../models/user_model.dart';
 
-// TODO: Implement UserProvider on ProfileScreen
-class UserProvider with ChangeNotifier {
-  final String _authToken;
-  final String _baseUrl = 'https://flutter-social-9fea3.firebaseio.com';
-  User _currentUser;
+class UserProvider {
 
-  UserProvider(this._authToken);
-
-  User get currentUser => _currentUser;
-
-  /// Get the current user from the database.
-  /// Takes [_authToken] class property and [_userId] argument. 
-  Future<void> getCurrentUser(String userId) async {
-    final url = '$_baseUrl/users/$userId.json?auth=$_authToken';
-    
-    try {
-      final response = await http.get(url);
-      
-      final extractedData = json.decode(response.body) as Map<String, dynamic>;
-      if (extractedData == null) {
-        return;
-      }
-      User loadedUser = User(
-            userId: extractedData['userId'],
-            email: extractedData['email'],
-            displayName: extractedData['displayName'],
-            bio: extractedData['bio'],
-      );
-
-      _currentUser = loadedUser;
-
-      notifyListeners(); 
-    } on Exception catch (error) {
-      throw (error);
+  static Future<User> getUserFromDatabase(String userId) async {
+    if (userId.isNotEmpty) {
+      return Firestore.instance
+          .collection('users')
+          .document(userId)
+          .get()
+          .then((documentSnapshot) => User.fromDocument(documentSnapshot));
+    } else {
+      return null;
     }
   }
 
-  /// Set the user to the database.
-  /// Takes [_authToken] class property and [user] object class as argument. 
-  Future<void> setUser(User user) async {
-    final url = '$_baseUrl/users/${user.userId}.json?auth=$_authToken';
+  static void setUserToDatabase(User user) async {
+    _checkIfUserExist(user.userId).then((userExists) {
+      if (!userExists) {
+        Firestore.instance
+            .document('users/${user.userId}')
+            .setData(user.toJson());
+      } else {
+        return null;
+      }
+    });
+  }
+
+  static void updateUserInDatabase(User user) async {
+    Firestore.instance
+      .document('users/${user.userId}')
+      .updateData(user.toJson());
+  }
+
+  static Future<User> getUserFromDevice() async {
+    final preferences = await SharedPreferences.getInstance();
+    if (preferences.getString('user').isNotEmpty) {
+      User user = userFromJson(preferences.getString('user'));
+      return user;
+    } else {
+      return null;
+    }
+  }
+
+  static Future<void> setUserOnDevice(User user) async {
+    final preferences = await SharedPreferences.getInstance();
+    final userDate = userToJson(user);
+    await preferences.setString('user', userDate);
+  }
+  
+  static Future<void> removeUserFromDevice() async {
+    final preferences = await SharedPreferences.getInstance();
+    await preferences.clear();
+  }
+
+  static Future<bool> _checkIfUserExist(String userId) async {
+    bool exists = false;
     try {
-      await http.post(
-        url,
-        body: json.encode({
-          'userId': user.userId,
-          'email': user.email,
-          'displayName': user.displayName,
-          'bio': user.bio,
-        }),
-      );
-      notifyListeners();
+      await Firestore.instance.document('users/$userId').get().then((doc) {
+        if (doc.exists)
+          exists = true;
+        else
+          exists = false;
+      });
+      return exists;
     } on Exception catch (error) {
-      throw (error);
+      throw error;
     }
   }
 }
