@@ -24,7 +24,7 @@ class AppDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: Icon(Icons.settings),
+            leading: Icon(Icons.phonelink_setup),
             title: Text('Settings'),
             onTap: () {
               Navigator.of(context).pushNamed(settingsRoute);

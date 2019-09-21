@@ -10,8 +10,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  PageController _pageController;
-  MenuItem _selectedMenuItem = menuItems[0];
 
   @override
   Widget build(BuildContext context) {
@@ -44,23 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  @override 
-  void initState() {
-    super.initState();
-    _pageController = PageController();
-  }
-
-  @override 
-  void dispose() {
-    super.dispose();
-    _pageController.dispose();
-  }
-
   void _selectMenuItem(MenuItem menuItem) {
-    setState(() {
-      _selectedMenuItem = menuItem;
-    });
-
     Navigator.push(context, MaterialPageRoute<void>(builder: (BuildContext context) => menuItem.screen));
   }
 }

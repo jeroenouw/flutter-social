@@ -17,6 +17,11 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> with TickerProvider
 
   bool _isComposing = false;
   String _userToChat = 'Default user';
+
+  @override
+  void initState() {
+    super.initState();
+  }
   
   @override
   Widget build(BuildContext context) {
@@ -44,14 +49,6 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> with TickerProvider
       ],
       ),
     );
-  }
-
-  @override 
-  void dispose() {
-    _messages.map<dynamic>((ChatMessage message) {
-      message.animationController.dispose();
-    });
-    super.dispose();
   }
 
   Widget _buildChatMessage() {
@@ -113,5 +110,13 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> with TickerProvider
       _messages.insert(0, message);
     });
     message.animationController.forward();
+  }
+
+  @override 
+  void dispose() {
+    _messages.map<dynamic>((ChatMessage message) {
+      message.animationController.dispose();
+    });
+    super.dispose();
   }
 }

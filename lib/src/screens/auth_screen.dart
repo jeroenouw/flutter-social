@@ -6,6 +6,7 @@ import '../models/auth_model.dart';
 import '../models/user_model.dart';
 import '../models/http_exception_model.dart';
 import '../providers/auth_provider.dart';
+import '../providers/user_provider.dart';
 
 class AuthScreen extends StatelessWidget {
 
@@ -172,7 +173,7 @@ class _AuthCardState extends State<AuthCard> {
            _authData['email'], 
            _authData['password']
           ).then((uid) {
-          AuthProvider.setUserToDatabase(User(
+          UserProvider.setUserToDatabase(User(
             userId: uid,
             email: _authData['email'],
             displayName: _authData['displayName'],
