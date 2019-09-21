@@ -4,3 +4,4 @@ final String chatDetailRoute = '/chat-detail';
 final String profileRoute = '/profile';
 final String settingsRoute = '/settings';
 final String authRoute = '/auth';
+final String notificationRoute = '/notification';

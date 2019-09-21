@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../constants/routing_contant.dart';
 import '../providers/auth_provider.dart';
 import './custom_alert.dart';
+import '../app.dart';
 
 class AppDrawer extends StatelessWidget {
   @override
@@ -14,25 +15,6 @@ class AppDrawer extends StatelessWidget {
           AppBar(
             title: Text('Navigation'),
             automaticallyImplyLeading: false,
-          ),
-          ListTile(
-            leading: Icon(Icons.people),
-            title: Text('Overview'),
-            onTap: () {
-              Navigator.of(context).pushNamed(chatOverviewRoute);
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.notifications),
-            title: Text('Notifications'),
-            onTap: () {
-              Navigator.push(context, MaterialPageRoute<void>(builder: (BuildContext context) => 
-                CustomAlert(
-                  title: 'Nothing to see here', 
-                  content: 'This page is still in development'
-                )
-              ));
-            },
           ),
           ListTile(
             leading: Icon(Icons.person),
@@ -47,7 +29,27 @@ class AppDrawer extends StatelessWidget {
             onTap: () {
               Navigator.of(context).pushNamed(settingsRoute);
             },
+          ),  
+          ListTile(
+            leading: Icon(Icons.notifications),
+            title: Text('Notifications'),
+            onTap: () {
+              Navigator.of(context).pushNamed(notificationRoute);
+            },
           ),
+          if (SocialApp.isPremiumEdition) 
+            ListTile(
+              leading: Icon(Icons.star),
+              title: Text('Premium content'),
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute<void>(builder: (BuildContext context) => 
+                  CustomAlert(
+                    title: 'Nothing to see here', 
+                    content: 'This page is still in development'
+                  )
+                ));
+              },
+            ),
           ListTile(
             leading: Icon(Icons.exit_to_app),
             title: Text('Logout'),

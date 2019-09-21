@@ -1,0 +1,4 @@
+enum Edition {
+  free,
+  premium,
+}

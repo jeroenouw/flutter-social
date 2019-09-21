@@ -2,16 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'constants/routing_contant.dart';
+import 'models/edition_model.dart';
 import 'screens/home_screen.dart';
 import 'screens/auth_screen.dart';
 import 'screens/chat_detail_screen.dart';
 import 'screens/chat_overview_screen.dart';
 import 'screens/profile_screen.dart';
+import 'screens/notification_screen.dart';
 import 'screens/settings_screen.dart';
 import 'screens/splash_screen.dart';
 import 'providers/auth_provider.dart';
 
-class MyApp extends StatelessWidget {
+class SocialApp extends StatelessWidget {
+  static Edition edition = Edition.free;
+
+  static bool get isFreeEdition => edition == Edition.free;
+  static bool get isPremiumEdition => edition == Edition.premium;
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -30,7 +37,6 @@ class MyApp extends StatelessWidget {
           home: auth.isAuth 
             ? HomeScreen() 
             : FutureBuilder(
-              future: auth.autoLoginIfUserSession(), 
               builder: (context, authResultSnapshot) => 
                 authResultSnapshot.connectionState == ConnectionState.waiting 
                 ? SplashScreen()
@@ -42,6 +48,7 @@ class MyApp extends StatelessWidget {
             profileRoute: (BuildContext context) => ProfileScreen(),
             settingsRoute: (BuildContext context) => SettingsScreen(),
             authRoute: (BuildContext context) => AuthScreen(),
+            notificationRoute: (BuildContext context) => NotificationScreen(),
           },
           showPerformanceOverlay: false,
         ),

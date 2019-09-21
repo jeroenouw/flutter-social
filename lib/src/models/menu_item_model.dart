@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../widgets/custom_alert.dart';
+import '../screens/notification_screen.dart';
 
 class MenuItem {
   final String title;
@@ -11,8 +11,5 @@ class MenuItem {
 }
 
 List<MenuItem> menuItems = <MenuItem>[
-  MenuItem(title: 'TBA', icon: Icons.notifications, screen: CustomAlert(
-    title: 'Nothing to see here', 
-    content: 'This page is still in development'
-  )),
+  MenuItem(title: 'Notifications', icon: Icons.notifications, screen: NotificationScreen())
 ];
