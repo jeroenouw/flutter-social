@@ -8,6 +8,7 @@ import 'screens/auth_screen.dart';
 import 'screens/chat_detail_screen.dart';
 import 'screens/chat_overview_screen.dart';
 import 'screens/profile_screen.dart';
+import 'screens/update_profile_screen.dart';
 import 'screens/notification_screen.dart';
 import 'screens/settings_screen.dart';
 import 'screens/splash_screen.dart';
@@ -31,12 +32,17 @@ class SocialApp extends StatelessWidget {
         builder: (context, auth, _) => MaterialApp(
           title: 'FlutterSocialApp',
           theme: ThemeData(
+            brightness: Brightness.light,
             primaryColor: Colors.blueAccent,
+          ),
+          darkTheme: ThemeData(
+            brightness: Brightness.dark,
           ),
           // home: HomeScreen(), 
           home: auth.isAuth 
             ? HomeScreen() 
             : FutureBuilder(
+              future: auth.autoLoginIfUserSession(),
               builder: (context, authResultSnapshot) => 
                 authResultSnapshot.connectionState == ConnectionState.waiting 
                 ? SplashScreen()
@@ -46,6 +52,7 @@ class SocialApp extends StatelessWidget {
             chatOverviewRoute: (BuildContext context) => ChatOverviewScreen(),
             chatDetailRoute: (BuildContext context) => ChatDetailScreen(),
             profileRoute: (BuildContext context) => ProfileScreen(),
+            updateProfileRoute: (BuildContext context) => UpdateProfileScreen(),
             settingsRoute: (BuildContext context) => SettingsScreen(),
             authRoute: (BuildContext context) => AuthScreen(),
             notificationRoute: (BuildContext context) => NotificationScreen(),
