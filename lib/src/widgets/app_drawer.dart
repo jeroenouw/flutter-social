@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_share_me/flutter_share_me.dart';
 import 'package:provider/provider.dart';
 
 import '../constants/routing_contant.dart';
@@ -57,6 +58,16 @@ class AppDrawer extends StatelessWidget {
               Navigator.of(context).pop();
               Navigator.of(context).pushNamedAndRemoveUntil(authRoute, (Route<dynamic> route) => false);
               Provider.of<AuthProvider>(context, listen: false).logout();
+            },
+          ),
+          Divider(),
+          ListTile(
+            leading: Icon(Icons.share),
+            title: Text('Share'),
+            onTap: () {
+              FlutterShareMe().shareToSystem(
+                msg: 'Flutter Social - Everything in one app',
+              );
             },
           ),
         ],
